@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace Steganography
 {
@@ -20,7 +21,7 @@ namespace Steganography
 
         public static Bitmap Crossover(Bitmap publicBitmap, Bitmap secretBitmap)
         {
-           Bitmap crossover = new Bitmap(publicBitmap.Width, publicBitmap.Height);
+            Bitmap crossover = new Bitmap(publicBitmap.Width, publicBitmap.Height);
 
             for (int x = 0; x < publicBitmap.Width; x++)
             {
@@ -32,7 +33,7 @@ namespace Steganography
                     var publicGreen = publicChannels.Item3;
                     var publicBlue = publicChannels.Item4;
 
-                    var secretChannels = ExtractChannels(publicBitmap, x % secretBitmap.Width, y % secretBitmap.Height);
+                    var secretChannels = ExtractChannels(secretBitmap, x % secretBitmap.Width, y % secretBitmap.Height);
                     var secretAlpha = secretChannels.Item1;
                     var secretRed = secretChannels.Item2;
                     var secretGreen = secretChannels.Item3;
@@ -53,7 +54,7 @@ namespace Steganography
 
         public static void SaveImage(Bitmap image, string path)
         {
-            image.Save(path);
+            image.Save(path, ImageFormat.Bmp);
         }
 
         private static Tuple<byte, byte, byte, byte> ExtractChannels(Bitmap image, int x, int y)
