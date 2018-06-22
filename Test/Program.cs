@@ -1,4 +1,4 @@
-﻿using Steganography;
+﻿using Steganograph;
 using System;
 
 namespace Test
@@ -8,7 +8,7 @@ namespace Test
         static void Main(string[] args)
         {
             Console.WriteLine("Crossover: 1");
-            Console.WriteLine("GetCrossed: 2");
+            Console.WriteLine("ExtractSecret: 2");
             var input = Console.ReadLine();
 
             switch (input)
@@ -17,7 +17,7 @@ namespace Test
                     Crossover();
                     break;
                 case "2":
-                    GetCrossed();
+                    ExtractSecret();
                     break;
             }
         }
@@ -36,7 +36,7 @@ namespace Test
             Stegano.CrossoverAndSave(publicPath, secretPath, savePath);
         }
 
-        static void GetCrossed()
+        static void ExtractSecret()
         {
             Console.WriteLine("Image path");
             var publicPath = Console.ReadLine();

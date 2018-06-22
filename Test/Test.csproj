@@ -49,9 +49,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Steganography\Steganography.csproj">
+    <ProjectReference Include="..\Steganograph\Steganograph.csproj">
       <Project>{E01542A0-DA75-4605-8C33-8E3E16A2FE61}</Project>
-      <Name>Steganography</Name>
+      <Name>Steganograph</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
