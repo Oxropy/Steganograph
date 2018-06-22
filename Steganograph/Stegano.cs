@@ -5,23 +5,29 @@ namespace Steganograph
 {
     public class Stegano
     {
-        public static void CrossoverAndSave(string publicPath, string secretPath, string savePath)
+        public static void CrossoverAndSave(string publicPath, string secretPath, string savePath, int privateBitCount = 1)
         {
+            if (privateBitCount > 8) return;
+
             var publicBitmap = LoadImage(publicPath);
             var secretBitmap = LoadImage(secretPath);
 
-            SaveImage(Crossover(publicBitmap, secretBitmap), savePath);
+            SaveImage(Crossover(publicBitmap, secretBitmap, privateBitCount), savePath);
         }
 
-        public static void GetCrossedAndSave(string path, string savePath)
+        public static void GetCrossedAndSave(string path, string savePath, int privateBitCount = 1)
         {
+            if (privateBitCount > 8) return;
+
             var bitmap = LoadImage(path);
 
-            SaveImage(ExtractSecret(bitmap), savePath);
+            SaveImage(ExtractSecret(bitmap, privateBitCount), savePath);
         }
 
-        public static Bitmap Crossover(Bitmap publicBitmap, Bitmap secretBitmap)
+        public static Bitmap Crossover(Bitmap publicBitmap, Bitmap secretBitmap, int privateBitCount)
         {
+            int publicBitCount = 8 - privateBitCount;
+
             Bitmap crossover = new Bitmap(publicBitmap.Width, publicBitmap.Height);
 
             for (int x = 0; x < publicBitmap.Width; x++)
@@ -38,9 +44,9 @@ namespace Steganograph
                     var secretGreen = secretPixel.G;
                     var secretBlue = secretPixel.B;
 
-                    var red = publicRed & 0xFE | (secretRed >> 7);
-                    var green = publicGreen & 0xFE | (secretGreen >> 7);
-                    var blue = publicBlue & 0xFE | (secretBlue >> 7);
+                    var red = publicRed & 0xFF << privateBitCount & 0xFF | (secretRed >> publicBitCount);
+                    var green = publicGreen & 0xFF << privateBitCount & 0xFF | (secretGreen >> publicBitCount);
+                    var blue = publicBlue & 0xFF << privateBitCount & 0xFF | (secretBlue >> publicBitCount);
 
                     crossover.SetPixel(x, y, Color.FromArgb(publicPixel.A, red, green, blue));
                 }
@@ -49,8 +55,10 @@ namespace Steganograph
             return crossover;
         }
 
-        public static Bitmap ExtractSecret(Bitmap bitmap)
+        public static Bitmap ExtractSecret(Bitmap bitmap, int privateBitCount)
         {
+            int publicBitCount = 8 - privateBitCount;
+
             Bitmap newBitmap = new Bitmap(bitmap.Width, bitmap.Height, PixelFormat.Format24bppRgb);
 
             for (int x = 0; x < bitmap.Width; x++)
@@ -58,9 +66,9 @@ namespace Steganograph
                 for (int y = 0; y < bitmap.Height; y++)
                 {
                     var pixel = bitmap.GetPixel(x, y);
-                    var red = (pixel.R << 7) & 0xFF;
-                    var green = (pixel.G << 7) & 0xFF;
-                    var blue = (pixel.B << 7) & 0xFF;
+                    var red = (pixel.R << publicBitCount) & 0xFF;
+                    var green = (pixel.G << publicBitCount) & 0xFF;
+                    var blue = (pixel.B << publicBitCount) & 0xFF;
 
                     newBitmap.SetPixel(x, y, Color.FromArgb(pixel.A, red, green, blue));
                 }

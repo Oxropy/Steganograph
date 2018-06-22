@@ -33,7 +33,11 @@ namespace Test
             Console.WriteLine("Save image path");
             var savePath = Console.ReadLine();
 
-            Stegano.CrossoverAndSave(publicPath, secretPath, savePath);
+            Console.WriteLine("Private bit count");
+            var privateBitCount = Console.ReadLine();
+
+            int.TryParse(privateBitCount, out int count);
+            Stegano.CrossoverAndSave(publicPath, secretPath, savePath, count);
         }
 
         static void ExtractSecret()
@@ -44,7 +48,11 @@ namespace Test
             Console.WriteLine("Save image path");
             var savePath = Console.ReadLine();
 
-            Stegano.GetCrossedAndSave(publicPath, savePath);
+            Console.WriteLine("Private bit count");
+            var privateBitCount = Console.ReadLine();
+
+            int.TryParse(privateBitCount, out int count);
+            Stegano.GetCrossedAndSave(publicPath, savePath, count);
         }
     }
 }
