@@ -14,6 +14,13 @@ namespace Steganography
             SaveImage(Crossover(publicBitmap, secretBitmap), savePath);
         }
 
+        public static void GetCrossedAndSave(string path, string savePath)
+        {
+            var bitmap = LoadImage(path);
+
+            SaveImage(GetCrossed(bitmap), savePath);
+        }
+
         public static Bitmap LoadImage(string path)
         {
             return (Bitmap)Image.FromFile(path, true);
@@ -50,6 +57,28 @@ namespace Steganography
             }
 
             return crossover;
+        }
+
+        public static Bitmap GetCrossed(Bitmap bitmap)
+        {
+            Bitmap newBitmap = new Bitmap(bitmap.Width, bitmap.Height);
+
+            for (int x = 0; x < bitmap.Width; x++)
+            {
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    var channels = ExtractChannels(bitmap, x, y);
+                    var alpha = channels.Item1 << 7;
+                    var red = channels.Item2 << 7;
+                    var green = channels.Item3 << 7;
+                    var blue = channels.Item4 << 7;
+                    var newColor = Color.FromArgb(alpha, red, green, blue);
+
+                    newBitmap.SetPixel(x, y, newColor);
+                }
+            }
+
+            return bitmap;
         }
 
         public static void SaveImage(Bitmap image, string path)
