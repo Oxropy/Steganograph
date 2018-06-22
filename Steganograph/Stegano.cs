@@ -38,9 +38,9 @@ namespace Steganograph
                     var secretGreen = secretPixel.G;
                     var secretBlue = secretPixel.B;
 
-                    var red = publicRed | (secretRed >> 7);
-                    var green = publicGreen | (secretGreen >> 7);
-                    var blue = publicBlue | (secretBlue >> 7);
+                    var red = publicRed & 0xFE | (secretRed >> 7);
+                    var green = publicGreen & 0xFE | (secretGreen >> 7);
+                    var blue = publicBlue & 0xFE | (secretBlue >> 7);
 
                     crossover.SetPixel(x, y, Color.FromArgb(publicPixel.A, red, green, blue));
                 }
