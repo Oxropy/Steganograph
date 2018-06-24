@@ -7,7 +7,7 @@ namespace Steganograph
     {
         public static void CrossoverAndSave(string publicPath, string secretPath, string savePath, int privateBitCount = 1)
         {
-            if (privateBitCount > 8) return;
+            if (privateBitCount < 1 || privateBitCount > 8) return;
 
             var publicBitmap = LoadImage(publicPath);
             var secretBitmap = LoadImage(secretPath);
@@ -15,13 +15,22 @@ namespace Steganograph
             SaveImage(Crossover(publicBitmap, secretBitmap, privateBitCount), savePath);
         }
 
-        public static void GetCrossedAndSave(string path, string savePath, int privateBitCount = 1)
+        public static void ExtractSecretAndSave(string path, string savePath, int privateBitCount = 1)
         {
-            if (privateBitCount > 8) return;
+            if (privateBitCount < 1 || privateBitCount > 8) return;
 
             var bitmap = LoadImage(path);
 
             SaveImage(ExtractSecret(bitmap, privateBitCount), savePath);
+        }
+
+        public static void ExtractPublicAndSave(string path, string savePath, int privateBitCount = 1)
+        {
+            if (privateBitCount < 1 || privateBitCount > 8) return;
+
+            var bitmap = LoadImage(path);
+
+            SaveImage(ExtractPublic(bitmap, privateBitCount), savePath);
         }
 
         public static Bitmap Crossover(Bitmap publicBitmap, Bitmap secretBitmap, int privateBitCount)
@@ -69,6 +78,26 @@ namespace Steganograph
                     var red = (pixel.R << publicBitCount) & 0xFF;
                     var green = (pixel.G << publicBitCount) & 0xFF;
                     var blue = (pixel.B << publicBitCount) & 0xFF;
+
+                    newBitmap.SetPixel(x, y, Color.FromArgb(pixel.A, red, green, blue));
+                }
+            }
+
+            return newBitmap;
+        }
+
+        public static Bitmap ExtractPublic(Bitmap bitmap, int privateBitCount)
+        {
+            Bitmap newBitmap = new Bitmap(bitmap.Width, bitmap.Height, PixelFormat.Format24bppRgb);
+
+            for (int x = 0; x < bitmap.Width; x++)
+            {
+                for (int y = 0; y < bitmap.Height; y++)
+                {
+                    var pixel = bitmap.GetPixel(x, y);
+                    var red = pixel.R >> privateBitCount << privateBitCount;
+                    var green = pixel.G >> privateBitCount << privateBitCount;
+                    var blue = pixel.B >> privateBitCount << privateBitCount;
 
                     newBitmap.SetPixel(x, y, Color.FromArgb(pixel.A, red, green, blue));
                 }
